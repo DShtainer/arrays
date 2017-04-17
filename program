@@ -1,0 +1,536 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using System.Text.RegularExpressions;
+
+namespace Array_1
+{
+    class Program
+    {
+      //..public static int length = 10;
+        public static Random rnd = new Random();
+        public static void Min(int[][] B)
+        {
+            int min = B[0][0];
+            for (int i = 0; i < B.Length; i++)
+                for (int j = 0; j < B[i].Length; j++)
+                    if (B[i][j] < min)
+                        min = B[i][j];
+            Console.WriteLine("Min: "+min);
+        }
+        public static void Max(int[][] B)
+        {
+            int max = B[0][0];
+            for (int i = 0; i < B.Length; i++)
+                for (int j = 0; j < B[i].Length; j++)
+                    if (B[i][j] > max)
+                        max = B[i][j];
+            Console.WriteLine("Max: "+max);
+        }
+        public static void Create_1(int[][] B)
+        {
+            for (int i = 0; i < B.Length; i++)
+                B[i] = new int[rnd.Next(1, 10)];
+            for (int i = 0; i < B.Length; i++)
+                for (int j = 0; j < B[i].Length; j++)
+                    B[i][j] = rnd.Next(100);
+        }//Здесь создается рандомный ступенчатый массив
+        public static void Create_2(int[,] array)
+        {
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                    array[i, j] = rnd.Next(100);
+            }
+        }//Здесь создаются рандомные двумерные массивы
+        public static void Create_3(Array array)
+        {
+            int i = 0;
+            foreach (object item in array)
+                array.SetValue(rnd.Next(1, 20), i++);
+        }//Здесь создается рандомный одномерный массив
+        public static void Vivod_1(Array array)
+        {
+            foreach (int u in array)
+                Console.Write(u + " ");
+        }
+        public static void Vivod_2(Array array)
+        {
+            for (int i = 0; i < array.GetLength(0); i++)//Вывод массива
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                    Console.Write(array.GetValue(i, j) + " ");
+                Console.WriteLine();//Конец вывода массива
+            }
+        }
+        public static void Vivod(int[][] B)
+        {
+            for (int i = 0; i < B.Length; i++)
+            {
+                for (int j = 0; j < B[i].Length; j++)
+                    Console.Write(B[i][j] + "  ");
+                Console.WriteLine();
+            }
+        }
+        public static void Menu_01(int[] M1)
+        {
+            Console.WriteLine("Что вы хотите сделать?");
+            Console.WriteLine("1)Вывести массив");
+            Console.WriteLine("2)Найти наибольшее значение");
+            Console.WriteLine("3)Найти наименьшее значение");
+            Console.WriteLine("4)Выполнить сортировку по возрастанию");
+            Console.WriteLine("5)Выполнить сортировку по убыванию");
+            Console.WriteLine("6)Вывести четные элементы массива");
+            Console.WriteLine("7)Выйти");
+            int x = 0;
+            while (x != 7)
+            {
+                x = int.Parse(Console.ReadLine());
+                switch (x)
+                {
+                    case 1: Vivod_1(M1);
+                        Console.WriteLine();
+
+                        break;
+                    case 2: Console.WriteLine("Max: "+M1.Max());
+                        Console.WriteLine();
+                        break;
+                    case 3: Console.WriteLine("Min: "+M1.Min());
+                        Console.WriteLine();
+                        break;
+                    case 4: Array.Sort(M1);
+                        Vivod_1(M1);
+                        Console.WriteLine();
+                        break;
+                    case 5:
+                        Array.Sort(M1);
+                        Array.Reverse(M1);
+                        Vivod_1(M1);
+                        Console.WriteLine();
+                        break;
+                    case 6: List<int> array1 = new List<int>();//Создание нового массива из четных элементов 
+                        int a = 0;
+                        for (int i = 0; i < M1.Length; i++)
+                            if (M1[i] % 2 == 0)
+                            {
+                                array1.Add(M1[i]);
+                                a++;
+                            }
+                        if (a > 0)
+                        {
+                            Console.WriteLine();// Вывод массива с четными членами 
+                            for (int i = 0; i < array1.Count; i++)
+                                Console.Write(array1[i] + " ");
+                        }
+                        else Console.WriteLine("Nope");
+
+                        Console.WriteLine();
+                        break;
+                }
+            }
+        }//Здесь производятся действия с одномерным масивом 
+        public static void Menu_02(int[,] M, int[,] M1)
+        {
+            int x = 0;
+            Console.WriteLine("Что Вы хотите сделать?");
+            Console.WriteLine("1)Вывести первую матрицу");
+            Console.WriteLine("2)Вывести наибольший элемент");
+            Console.WriteLine("3)Вывести наименьший элемент ");
+            Console.WriteLine("4)Высести вторую матрицу");
+            Console.WriteLine("5)Сложить матицы");
+            Console.WriteLine("6)Вычесть матицы");
+            Console.WriteLine("7)Перемножить матицы");
+            Console.WriteLine("8)Выйти");
+            while (x != 8)
+            {
+
+                x = int.Parse(Console.ReadLine());
+                switch (x)
+                {
+                    case 1: Vivod_2(M);
+                        Console.WriteLine();
+                        break;
+
+                    case 4: Vivod_2(M1);
+                        Console.WriteLine();
+                        break;
+                    case 2:
+                        int n1 = 0; int m1 = 0; int max = M[0, 0];//Наибольший элемент
+                        for (int i = 0; i < M.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < M.GetLength(1); j++)
+                                if (M[i, j] > max)
+                                {
+                                    n1 = i;
+                                    m1 = j;
+                                    max = M[i, j];
+                                }
+                        }
+
+                        Console.WriteLine("Max: M[" + n1 + "," + m1 + "]:" + max);// Вывод наибольшего элемента
+                        Console.WriteLine();
+                        break;
+                    case 3:
+                        int n2 = 0; int m2 = 0; int min = M[0, 0];//Наименьший элемент
+                        for (int i = 0; i < M.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < M.GetLength(1); j++)
+                                if (M[i, j] < min)
+                                {
+                                    n2 = i;
+                                    m2 = j;
+                                    min = M[i, j];
+
+                                }
+                        }
+                        Console.WriteLine("Min: M[" + n2 + "," + m2 + "]:" + min);// Вывод наименьшего элемента 
+                        Console.WriteLine();
+                        break;
+
+                    case 5:
+                        int sum;
+
+                        for (int i = 0; i < M.GetLength(0); i++)//Вывод массива суммы
+                        {
+                            for (int j = 0; j < M.GetLength(1); j++)
+                            {
+                                sum = M[i, j] + M1[i, j];
+                                Console.Write(sum + " ");
+                            }
+                            sum = 0;
+                            Console.WriteLine();
+                        }//Конец вывода массива суммы
+                        Console.WriteLine();
+                        break;
+                    case 6:
+                        int difference;
+                        for (int i = 0; i < M.GetLength(0); i++)//Вывод массива разности
+                        {
+                            for (int j = 0; j < M.GetLength(1); j++)
+                            {
+                                difference = M[i, j] - M1[i, j];
+                                Console.Write(difference + " ");
+                            }
+                            difference = 0;
+                            Console.WriteLine();
+
+                        }//Конец вывода массива разности
+                        Console.WriteLine();
+                        break;
+                    case 7:
+                        int multiply = 0;
+                        for (int i = 0; i < M.GetLength(0); i++)//Вывод массива произведения
+                        {
+                            for (int f = 0; f < M.GetLength(0); f++)
+                            {
+
+                                for (int j = 0; j < M.GetLength(1); j++)
+                                {
+                                    multiply = multiply + M[i, j] * M1[j, f];
+                                }
+                                Console.Write(multiply + " ");
+                                multiply = 0;
+                            }
+
+
+                            Console.WriteLine();
+                        } break;
+
+                }
+            }
+        }//Здесь производятся действия с двумерными массивами
+        public static void Menu_03(int[][] array)
+        {
+            Console.WriteLine("Что Вы хоттите сделать?");
+            Console.WriteLine("1)Вывести массив");
+            Console.WriteLine("2)Вывести минимальный элемент");
+            Console.WriteLine("3)Вывести максимальный элемент");
+            Console.WriteLine("4)Изменить элемент массива");
+            Console.WriteLine("5)Выйти");
+            int v = 0;
+            while (v != 5)
+            {
+                v = int.Parse(Console.ReadLine());
+                switch (v)
+                {
+                    case 1: Vivod(array); break;
+                    case 2: Min(array); break;
+                    case 3: Max(array); break;
+                    case 4:
+                        Console.WriteLine("В какой строке Вы хотите изменить элемент?");
+                        int x;
+                        x = int.Parse(Console.ReadLine());
+                        Console.WriteLine("Какой элемент строки Вы хотите изменить?");
+                        int y;
+                        y = int.Parse(Console.ReadLine());
+                        Console.WriteLine("На что будет изменен элемент?");
+                        array[x][y] = int.Parse(Console.ReadLine());
+                        Vivod(array);
+                        break;
+                }
+            }
+        }//Здесь производятся действия со ступенчатыми массивами
+        public static void Menu_1()
+        {
+            int s = 0;
+
+            while (s != 4)
+            {
+                Console.WriteLine("Как Вы хотите ввести массив?");
+                Console.WriteLine("1)Самостоятельно");
+                Console.WriteLine("2)Из файла");
+                Console.WriteLine("3)Рандомный массив");
+                Console.WriteLine("Нажмите 4, чтобы выйти");
+                s = int.Parse(Console.ReadLine());
+                switch (s)
+                {
+                    case 1:
+                        Console.WriteLine("Сколько элементов будет в Вашем массиве?");
+                        int d = int.Parse(Console.ReadLine());
+                        int[] array_0 = new int[d];
+                        for (int i = 0; i < d; i++)
+                        {
+                            Console.WriteLine("Ведите " + i + "-ой элемент массива");
+                            array_0[i] = int.Parse(Console.ReadLine());
+                        }
+                        Menu_01(array_0);
+                        break;
+                    case 2:
+
+                        int count = File.ReadAllLines("D:\\C#\\newarray2.txt").Length;
+                        StreamReader ReadFile = File.OpenText("D:\\C#\\newarray2.txt");
+                        int[] array_1 = new int[count];
+                        for (int i = 0; i < array_1.Length; i++)
+                        {
+                            string l = null;
+                            l = ReadFile.ReadLine();
+                            array_1[i] = Convert.ToInt32(l);
+                        }
+                        Menu_01(array_1);
+
+                        break;
+                    case 3:
+                        int number = rnd.Next(3, 10);
+                        int[] array_2 = new int[number];
+                        Create_3(array_2);
+                        Menu_01(array_2);
+                        break;
+                }
+            }
+        }//Здесь производится ввод одномерного массива 
+        public static void Menu_2()
+        {
+            int s = 0;
+
+            while (s != 4)
+            {
+                Console.WriteLine("Как Вы хотите ввести массив?");
+                Console.WriteLine("1)Самостоятельно");
+                Console.WriteLine("2)Из файла");
+                Console.WriteLine("3)Рандомный массив");
+                Console.WriteLine("Нажмите 4, чтобы выйти");
+                s = int.Parse(Console.ReadLine());
+                switch (s)
+                {
+                    case 1:
+                        Console.WriteLine("Сколько строк и столбцов будут содержать массивы?");
+                        int d = int.Parse(Console.ReadLine());
+                        int[,] array1 = new int[d, d];
+                        for (int i = 0; i < d; i++)
+                            for (int j = 0; j < d; j++)
+                            {
+                                Console.WriteLine("Введите элемент [" + i + "," + j + "] первого массива");
+                                array1[i, j] = int.Parse(Console.ReadLine());
+                            }
+
+                        int[,] array2 = new int[d, d];
+                        for (int i = 0; i < d; i++)
+                            for (int j = 0; j < d; j++)
+                            {
+                                Console.WriteLine("Введите элемент [" + i + "," + j + "] второго массива");
+                                array2[i, j] = int.Parse(Console.ReadLine());
+                            }
+                        Menu_02(array1, array2);
+                        break;
+                    case 2:
+                        int n = 0;
+                        int m = 0;
+                        StreamReader read = new StreamReader("D:\\C#\\newarray4.txt");
+                        string numbers = read.ReadLine();
+                        Match match = Regex.Match(numbers, @"\w+");
+                        while (match.Success)
+                        {
+                            n++;
+                            match = match.NextMatch();
+                        }
+                        while (numbers != null)
+                        {
+                            numbers = read.ReadLine();
+                            m++;
+                        }
+                        int[,] mass1 = new int[m, n];
+                        read = new StreamReader("D:\\C#\\newarray4.txt");
+                        for (int c = 0; c < m; c++)
+                        {
+                            numbers = read.ReadLine();
+                            match = Regex.Match(numbers, @"([-+]?)+(\d+)");
+                            for (int l = 0; l < n; l++)
+                            {
+                                string number = match.ToString();
+                                mass1[c, l] = Int32.Parse(number);
+                                match = match.NextMatch();
+                            }
+                        }
+                        //for (int i = 0; i < mass1.GetLength(0);i++)
+                        //{
+                        //    for (int j = 0; j < mass1.GetLength(1); j++)
+                        //        Console.Write(mass1[i, j]+" ");
+                        //    Console.WriteLine();
+                        //}
+                        //Console.WriteLine();
+                        //Console.ReadKey();
+                        int n1 = 0;
+                        int m1 = 0;
+                        StreamReader read1 = new StreamReader("D:\\C#\\newarray3.txt");
+                        string numbers1 = read1.ReadLine();
+                        Match match1 = Regex.Match(numbers, @"\w+");
+                        while (match1.Success)
+                        {
+                            n1++;
+                            match1 = match1.NextMatch();
+                        }
+                        while (numbers1 != null)
+                        {
+                            numbers1 = read1.ReadLine();
+                            m1++;
+                        }
+                        int[,] mass2 = new int[m, n];
+                        read1 = new StreamReader("D:\\C#\\newarray3.txt");
+                        for (int c = 0; c < m1; c++)
+                        {
+                            numbers1 = read1.ReadLine();
+                            match1 = Regex.Match(numbers1, @"([-+]?)+(\d+)");
+                            for (int l = 0; l < n1; l++)
+                            {
+                                string number1 = match1.ToString();
+                                mass2[c, l] = Int32.Parse(number1);
+                                match1 = match1.NextMatch();
+                            }
+                        }
+
+
+                        Menu_02(mass1, mass2);
+
+
+
+
+                        break;
+                    case 3:
+                        int D = rnd.Next(1, 10);
+                        int[,] M = new int[D, D];//Создание массива
+                        Create_2(M);
+                        int[,] M1 = new int[D, D];//Создание нового массива
+                        Create_2(M1);
+                        Menu_02(M, M1);
+                        break;
+                }
+            }
+        }//Здесь производится ввод двумерных массивов
+        public static void Menu_3()
+        {
+            int s = 0;
+            while (s !=4)
+            {
+                Console.WriteLine("Как Вы хотите ввести массив?");
+                Console.WriteLine("1)Самостоятельно");
+                Console.WriteLine("2)Из файла");
+                Console.WriteLine("3)Рандомный массив");
+                Console.WriteLine("Нажмите 4, чтобы выйти");
+                s = int.Parse(Console.ReadLine());
+                switch (s)
+                {
+                    case 1:
+                        Console.WriteLine("Сколько строк будет в вашем массиве?");
+                        int t = int.Parse(Console.ReadLine());
+                        int[][] B = new int[t][];
+                        for (int i = 0; i < B.Length; i++)
+                        {
+                            Console.WriteLine("Сколько элементов будет в " + i + "-ой строке?");
+                            int d = int.Parse(Console.ReadLine());
+                            B[i] = new int[d];
+                            for (int j = 0; j < B[i].Length; j++)
+                            {
+                                Console.Write("Ведите элемент массива M["+i+"]["+j+"]=");
+                                B[i][j] = int.Parse(Console.ReadLine());
+                                Console.WriteLine();
+                            }
+                        }
+                        Menu_03(B);
+                        break;
+                    case 2:
+                        int count = File.ReadAllLines("D:\\C#\\Array.txt").Length;
+      //FileStream file1 = new FileStream("D:\\C#\\Array.txt", FileMode.Open); //создаем файловый поток
+            StreamReader reader = new StreamReader("D:\\C#\\Array.txt"); // создаем «потоковый читатель» и связываем его с файловым потоком 
+           int[][] array2 = new int[count][];
+            for (int j = 0; j < count; j++)
+            {
+                int k = 0;
+                    string file = reader.ReadLine();
+                    int[] nums = file
+                        .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(n => int.Parse(n))
+                        .ToArray();
+                    array2[j] = new int[nums.Length];
+                    foreach (int i in nums)
+                    {
+                            array2[j][k] = i;
+                        k++;
+                      
+                    }
+                    
+            }
+            Menu_03(array2);
+                        break;
+                    case 3:
+                int[][] array3 = new int[rnd.Next(3, 10)][];
+            Create_1(array3);
+            Menu_03(array3);
+                        break;
+                }
+            }
+
+        }//Здесь производится ввод ступенчатого массива
+        static void Main()
+        {
+
+            int a = 0;
+            while (a != 4)
+            {
+                Console.WriteLine("С какими массивами Вы хотите работать?");
+                Console.WriteLine("1)Одномерными");
+                Console.WriteLine("2)Двумерными");
+                Console.WriteLine("3)Ступенчатыми");
+                Console.WriteLine("4)Выйти");
+                a = int.Parse(Console.ReadLine());
+               
+                switch (a)
+                {
+                    case 1:
+                        Menu_1();
+                        break;
+                    case 2:
+                        Menu_2();
+                        break;
+                    case 3:
+                        Menu_3();
+                        break;
+                }
+            }
+        }
+    }
+}
+
+
